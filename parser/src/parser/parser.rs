@@ -837,8 +837,11 @@ fn parse_while(tokens: &mut Peekable<Iter<Token>>) -> Option<ASTNode> {
 fn parse_assignment(tokens: &mut Peekable<Iter<Token>>, first_token: &Token) -> Option<ASTNode> {
     let left_expr = parse_expression_from_token(first_token, tokens)?;
 
-    if let Some(Token { token_type: TokenType::Equal, .. }) = tokens.peek() {
-        tokens.next(); // consume '='
+    if tokens.peek()?.token_type != TokenType::Equal {
+        println!("Error: Expected '=' in assignment");
+        return None;
+    }
+    tokens.next(); // consume '='
 
         let right_expr = parse_expression(tokens)?;
 
