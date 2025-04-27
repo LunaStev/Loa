@@ -73,7 +73,11 @@ impl<'a> Lexer<'a> {
         if self.is_at_end() {
             '\0'
         } else {
-            self.source.chars().nth(self.current).unwrap_or('\0')
+            let rest = &self.source[self.current..];
+            match std::str::from_utf8(rest.as_ref()) {
+                Ok(s) => s.chars().next().unwrap_or('\0'),
+                Err(_) => '\0',
+            }
         }
     }
 
