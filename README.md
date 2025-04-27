@@ -21,16 +21,9 @@
 ---
 
 ## Overview
-Loa is a lightweight, simple, and Unicode-friendly scripting language.
-Designed for fast scripting, automation, and educational purposes.
-
-* Minimalistic design
-
-* Python-like syntax (indentation-based blocks)
-
-* Full UTF-8 support
-
-* Small and fast interpreter written in Rust
+Loa is a programming language focused on simplicity, readability, and ease of use.
+It is an interpreted language with a clean and minimal syntax, designed to make programming accessible and straightforward.
+Loa supports basic programming constructs such as variables, conditionals, loops, and functions, making it suitable for a wide range of general-purpose tasks.
 
 ---
 
