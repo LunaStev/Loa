@@ -6,19 +6,6 @@ pub enum Value {
 }
 
 #[derive(Debug, Clone)]
-pub enum WaveType {
-    Int(u16),
-    Uint(u16),
-    Float(u16),
-    Bool,
-    Char,
-    Byte,
-    String,
-    Pointer(Box<WaveType>),
-    Array(Box<WaveType>, u32),
-}
-
-#[derive(Debug, Clone)]
 pub enum ASTNode {
     Function(FunctionNode),
     Program(ParameterNode),
@@ -31,14 +18,12 @@ pub enum ASTNode {
 pub struct FunctionNode {
     pub name: String,
     pub parameters: Vec<ParameterNode>,
-    pub return_type: Option<WaveType>,
     pub body: Vec<ASTNode>,
 }
 
 #[derive(Debug, Clone)]
 pub struct ParameterNode {
     pub name: String,
-    pub param_type: WaveType,
     pub initial_value: Option<Value>,
 }
 
@@ -131,7 +116,6 @@ pub enum Mutability {
 #[derive(Debug, Clone)]
 pub struct VariableNode {
     pub name: String,
-    pub type_name: WaveType,
     pub initial_value: Option<Expression>,
     pub mutability: Mutability,
 }
