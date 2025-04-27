@@ -922,25 +922,37 @@ fn parse_block(tokens: &mut Peekable<Iter<Token>>) -> Option<Vec<ASTNode>> {
     Some(body)
 }
 
-pub fn parse_type(type_str: &str) -> Option<TokenType> {
-    if type_str.starts_with('i') {
-        let bits = type_str[1..].parse::<u16>().ok()?;
-        Some(TokenType::TypeInt(bits))
-    } else if type_str.starts_with('f') {
-        let bits = type_str[1..].parse::<u16>().ok()?;
-        Some(TokenType::TypeFloat(bits))
-    } else if type_str == "bool" {
-        Some(TokenType::TypeBool)
-    } else if type_str == "char" {
-        Some(TokenType::TypeChar)
-    } else if type_str == "byte" {
-        Some(TokenType::TypeByte)
-    } else if type_str == "str" {
-        Some(TokenType::TypeString)
-    } else if type_str.starts_with("array<") && type_str.ends_with('>') {
-        let parts: Vec<&str> = type_str[6..type_str.len() - 1].split(',').collect();
-        if parts.len() != 2 {
-            return None;
+fn parse_statement(tokens: &mut Peekable<Iter<Token>>) -> Option<ASTNode> {
+    let token = tokens.peek()?.clone();
+
+    match token.token_type {
+        TokenType::Print => {
+            tokens.next(); // consume 'print'
+            parse_print(tokens)
+        }
+        TokenType::If => {
+            tokens.next(); // consume 'if'
+            parse_if(tokens)
+        }
+        TokenType::While => {
+            tokens.next(); // consume 'while'
+            parse_while(tokens)
+        }
+        TokenType::For => {
+            tokens.next(); // consume 'for'
+            parse_for(tokens)
+        }
+        TokenType::Return => {
+            tokens.next(); // consume 'return'
+            parse_return(tokens)
+        }
+        TokenType::Break => {
+            tokens.next(); // consume 'break'
+            Some(ASTNode::Statement(StatementNode::Break))
+        }
+        TokenType::Continue => {
+            tokens.next(); // consume 'continue'
+            Some(ASTNode::Statement(StatementNode::Continue))
         }
         TokenType::Identifier(_) => {
             let first = tokens.next()?; // consume identifier
