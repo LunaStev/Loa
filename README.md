@@ -3,7 +3,7 @@
   <h1>Loa Programming Language</h1>
   <p>
     <a href="https://wave-lang.dev">Website</a> •
-    <a href="https://github.com/LunaStev/Wave/wiki/Contributing">Contributing</a> •
+    <a href="CONTRIBUTING.md">Contributing</a> •
     <a href="LICENSE">LICENSE</a>
   </p>
 </div>
