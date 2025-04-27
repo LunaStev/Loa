@@ -57,12 +57,44 @@ impl Interpreter {
                     self.execute(body);
                 }
             }
-            StatementNode::Break => {
-                // 나중에 추가할 수 있음
+            StatementNode::If { condition, body, else_if_blocks, else_block } => {
+                if self.evaluate_condition(condition) {
+                    self.execute(body);
+                } else if let Some(else_ifs) = else_if_blocks {
+                    let mut executed = false;
+
+                    for else_if in else_ifs.iter() {
+                        if let ASTNode::Statement(StatementNode::If { condition: else_if_condition, body, else_if_blocks: _, else_block: inner_else_block }) = else_if {
+                            if self.evaluate_condition(else_if_condition) {
+                                self.execute(body);
+                                executed = true;
+                                break;
+                            } else if let Some(inner_else_block) = inner_else_block {
+                                let warning = WaveError::new(
+                                    WaveErrorKind::SyntaxError("Unused else block".to_string()),
+                                    "Warning: An else block inside an else-if was ignored",
+                                    "unknown",
+                                    0,
+                                    0,
+                                );
+                                warning.display();
+                            }
+                        }
+                    }
+
+                    if !executed {
+                        if let Some(else_if) = else_ifs.first() {
+                            if let ASTNode::Statement(StatementNode::If { else_block: Some(inner_else_block), .. }) = else_if {
+                                self.execute(inner_else_block);
+                            }
+                        }
+                    }
+                } else if let Some(else_block) = else_block {
+                    self.execute(else_block);
+                }
             }
-            StatementNode::Continue => {
-                // 나중에 추가할 수 있음
-            }
+            StatementNode::Break => {}
+            StatementNode::Continue => {}
             StatementNode::Return(_) => {
                 // 나중에 추가할 수 있음
             }
