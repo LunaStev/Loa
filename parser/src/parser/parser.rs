@@ -307,7 +307,14 @@ fn skip_whitespace(tokens: &mut Peekable<Iter<Token>>) {
 // IF parsing
 fn parse_if(tokens: &mut Peekable<Iter<Token>>) -> Option<ASTNode> {
     if tokens.peek()?.token_type != TokenType::Lparen {
-        println!("Error: Expected '(' after 'if'");
+        let token = tokens.peek().unwrap();
+        WaveError::new(
+            WaveErrorKind::ExpectedToken("(".to_string()),
+            "Expected '(' after 'if'".to_string(),
+            "unknown",
+            token.line,
+            0,
+        ).display();
         return None;
     }
     tokens.next(); // Consume '('
