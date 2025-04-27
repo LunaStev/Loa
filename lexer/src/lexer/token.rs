@@ -1,5 +1,3 @@
-use std::fmt::Debug;
-
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     Fun,
@@ -7,38 +5,45 @@ pub enum TokenType {
     Else,
     While,
     For,
+    Import,
     Return,
     Continue,
     Break,
+    Input,
     Print,
     Println,
-    Input,
+
+    LogicalAnd,    // &&
+    LogicalOr,     // ||
+    NotEqual,      // !=
+    Not,           // !
+    Xor,           // ^
+
+    Operator(String),
 
     Identifier(String),
     String(String),
     Number(i64),
     Float(f64),
 
-    Plus,         // +
-    Minus,        // -
-    Star,         // *
-    Div,          // /
-    Equal,        // =
-    EqualTwo,     // ==
-    NotEqual,     // !=
-    Greater,      // >
-    GreaterEqual, // >=
-    Less,         // <
-    LessEqual,    // <=
-
-    LogicalAnd,   // &&
-    LogicalOr,    // ||
-    Not,          // !
-
-    Lparen,       // (
-    Rparen,       // )
-    Colon,        // :
-    Comma,        // ,
+    Plus,          // +
+    Minus,         // -
+    Star,          // *
+    Div,           // /
+    Equal,         // =
+    EqualTwo,      // ==
+    Comma,         // ,
+    Dot,           // .
+    SemiColon,     // ;
+    Colon,         // :
+    Lchevr,        // <
+    LchevrEq,      // <=
+    Rchevr,        // >
+    RchevrEq,      // >=
+    Lparen,        // (
+    Rparen,        // )
+    Lbrack,        // [
+    Rbrack,        // ]
 
     Eof,
     Error,
