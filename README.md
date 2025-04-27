@@ -82,7 +82,7 @@ A huge thank you to our sponsors for supporting this project!
 
 ## Contributing
 
-Interested in contributing? Check out our [Contributing Guide](https://github.com/LunaStev/Wave/wiki/Contributing) to get started.
+Interested in contributing? Check out our [Contributing Guide](CONTRIBUTING.md) to get started.
 
 ---
 
