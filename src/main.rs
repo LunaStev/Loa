@@ -84,3 +84,39 @@ unsafe fn run_loa_file(file_path: &str) {
     let mut interpreter = Interpreter::new();
     interpreter.execute(&ast);
 }
+
+
+fn repl_mode() {
+    use std::io::{self, Write};
+
+    let mut interpreter = Interpreter::new();
+
+    loop {
+        print!("Loa > ");
+        io::stdout().flush().unwrap();
+
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+        let trimmed = input.trim();
+
+        if trimmed == "exit" || trimmed == "quit" {
+            break;
+        }
+
+        let mut lexer = Lexer::new(trimmed);
+        let tokens = lexer.tokenize();
+
+        if tokens.is_empty() {
+            continue;
+        }
+
+        match parse(&tokens) {
+            Some(ast) => {
+                interpreter.execute(&ast);
+            }
+            None => {
+                println!("Parse error: failed to parse input.");
+            }
+        }
+    }
+}
