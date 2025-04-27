@@ -863,9 +863,7 @@ fn parse_assignment(tokens: &mut Peekable<Iter<Token>>, first_token: &Token) -> 
             }));
         }
 
-        panic!("Unsupported assignment left expression: {:?}", left_expr);
-    }
-
+    println!("Error: Left side of assignment must be a variable");
     None
 }
 
