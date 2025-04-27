@@ -1,6 +1,6 @@
 [package]
 name = "loa"
-version = "0.0.1-pre-beta"
+version = "0.0.1-alpha"
 edition = "2021"
 
 [dependencies]
