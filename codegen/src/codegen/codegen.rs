@@ -95,8 +95,7 @@ impl Interpreter {
             }
             StatementNode::Break => {}
             StatementNode::Continue => {}
-            StatementNode::Return(_) => {
-            }
+            StatementNode::Return(_) => {}
             _ => {}
         }
     }
