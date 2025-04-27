@@ -27,7 +27,7 @@ pub fn parse(tokens: &Vec<Token>) -> Option<Vec<ASTNode>> {
     Some(nodes)
 }
 
-pub fn param(parameter: String, param_type: WaveType, initial_value: Option<Value>) -> ParameterNode {
+pub fn param(parameter: String, initial_value: Option<Value>) -> ParameterNode {
     ParameterNode {
         name: parameter,
         param_type,
