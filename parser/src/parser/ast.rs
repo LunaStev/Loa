@@ -94,17 +94,7 @@ pub enum Operator {
 
 #[derive(Debug, Clone)]
 pub enum StatementNode {
-    Print(String),
-    PrintFormat {
-        format: String,
-        args: Vec<Expression>,
-    },
-    Println(String),
-    PrintlnFormat {
-        format: String,
-        args: Vec<Expression>,
-    },
-    Variable(String),
+    PrintArgs(Vec<Expression>),
     If {
         condition: Expression,
         body: Vec<ASTNode>,
