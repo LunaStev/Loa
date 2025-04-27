@@ -78,9 +78,6 @@ unsafe fn run_loa_file(file_path: &str) {
 
     // println!("code: \n{}\n", code);
 
-    // for token in tokens {
-    //     println!("{:?}", token);
-    // }
 
     // println!("AST:\n{:#?}", ast);
 
