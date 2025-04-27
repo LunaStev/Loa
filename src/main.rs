@@ -38,7 +38,7 @@ fn main() {
             if args.len() < 3 {
                 eprintln!("{} {}",
                           "Usage:".color("255,71,71"),
-                          "wave run <file>");
+                          "loa run <file>");
                 process::exit(1);
             }
 
@@ -48,14 +48,15 @@ fn main() {
         "repl" => repl_mode(),
         "help" => {
             println!("{}", "Options:".color("145,161,2"));
-            println!("      {}       {}\n",
+            println!("      {}\n      {}\n      {}\n",
                      "run <file>".color("38,139,235"),
-                     "Run the Wave code.");
+                     "repl".color("38,139,235"),
+                     "Run the Loa code.");
 
             println!("{}", "Commands:".color("145,161,2"));
-            println!("      {}    {}\n",
+            println!("      {}\n      {}\n",
                      "-V, --version".color("38,139,235"),
-                     "Verified the version of the Wave compiler.");
+                     "Verified the version of the Loa interpreter.");
             return;
         }
         _ => {
@@ -63,7 +64,7 @@ fn main() {
                       "Unknown command:".color("255,71,71"),
                       args[1]);
             eprintln!("{}",
-                      "Use 'wave --version' or 'wave run <file>'".color("145,161,2"));
+                      "Use 'loa --version' or 'loa run <file>'".color("145,161,2"));
             process::exit(1);
         }
     }
