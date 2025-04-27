@@ -893,13 +893,9 @@ fn parse_block(tokens: &mut Peekable<Iter<Token>>) -> Option<Vec<ASTNode>> {
                 if let Some(node) = parse_statement(tokens) {
                     body.push(node);
                 } else {
-                    let value = parse_expression(tokens)?;
-                    if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
-                        tokens.next(); // consume ;
-                    }
-                    Some(value)
-                };
-                Some(ASTNode::Statement(StatementNode::Return(expr)))
+                    println!("Error: Failed to parse statement inside block");
+                    return None;
+                }
             }
             _ => None
         };
