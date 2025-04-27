@@ -1,5 +1,8 @@
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
+    Indent,
+    Dedent,
+
     Fun,
     If,
     Else,
