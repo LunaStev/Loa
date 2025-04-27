@@ -873,24 +873,17 @@ fn parse_assignment(tokens: &mut Peekable<Iter<Token>>, first_token: &Token) -> 
 fn parse_block(tokens: &mut Peekable<Iter<Token>>) -> Option<Vec<ASTNode>> {
     let mut body = vec![];
 
-    while let Some(token) = tokens.next() {
-        if token.token_type == TokenType::Rbrace {
-            break;
-        }
+    if tokens.peek()?.token_type != TokenType::Indent {
+        println!("Error: Expected Indent to start a block");
+        return None;
+    }
+    tokens.next(); // consume Indent
 
-        let node = match token.token_type {
-            TokenType::Var => parse_var(tokens),
-            TokenType::Println => parse_println(tokens),
-            TokenType::Print => parse_print(tokens),
-            TokenType::If => parse_if(tokens),
-            TokenType::For => parse_for(tokens),
-            TokenType::While => parse_while(tokens),
-            TokenType::Identifier(_) => parse_assignment(tokens, token),
-            TokenType::Break => {
-                if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
-                    tokens.next();
-                }
-                Some(ASTNode::Statement(StatementNode::Break))
+    while let Some(token) = tokens.peek() {
+        match token.token_type {
+            TokenType::Dedent => {
+                tokens.next(); // consume Dedent
+                break;
             }
             TokenType::Continue => {
                 if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
