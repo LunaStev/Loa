@@ -842,26 +842,15 @@ fn parse_assignment(tokens: &mut Peekable<Iter<Token>>, first_token: &Token) -> 
 
         let right_expr = parse_expression(tokens)?;
 
-        if let Expression::Deref(_) = left_expr {
-            return Some(ASTNode::Statement(StatementNode::Assign {
-                variable: "deref".to_string(),
-                value: Expression::BinaryExpression {
-                    left: Box::new(left_expr),
-                    operator: Operator::Assign,
-                    right: Box::new(right_expr),
-                },
-            }));
+    if let Expression::Variable(name) = left_expr {
+        if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
+            tokens.next(); // consume ';'
         }
-
-        if let Expression::Variable(name) = left_expr {
-            if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
-                tokens.next(); // consume ';'
-            }
-            return Some(ASTNode::Statement(StatementNode::Assign {
-                variable: name,
-                value: right_expr,
-            }));
-        }
+        return Some(ASTNode::Statement(StatementNode::Assign {
+            variable: name,
+            value: right_expr,
+        }));
+    }
 
     println!("Error: Left side of assignment must be a variable");
     None
