@@ -36,17 +36,6 @@ pub fn parse_expression<'a, T>(tokens: &mut Peekable<T>) -> Option<Expression>
 where
     T: Iterator<Item = &'a Token>,
 {
-    if let Some(Token { token_type: TokenType::AddressOf, .. }) = tokens.peek() {
-        tokens.next(); // consume '&'
-        let inner = parse_expression(tokens)?;
-        return Some(Expression::AddressOf(Box::new(inner)));
-    }
-
-    if let Some(Token { token_type: TokenType::Deref, .. }) = tokens.peek() {
-        tokens.next(); // consume 'deref'
-        let inner = parse_expression(tokens)?;
-        return Some(Expression::Deref(Box::new(inner)));
-    }
     let expr = parse_logical_expression(tokens)?;
     Some(expr)
 }
@@ -257,15 +246,6 @@ where
 pub fn parse_expression_from_token(first_token: &Token, tokens: &mut Peekable<Iter<Token>>) -> Option<Expression> {
     match &first_token.token_type {
         TokenType::Identifier(name) => Some(Expression::Variable(name.clone())),
-
-        TokenType::Deref => {
-            if let Some(next_token) = tokens.next() {
-                if let TokenType::Identifier(name) = &next_token.token_type {
-                    return Some(Expression::Deref(Box::new(Expression::Variable(name.clone()))));
-                }
-            }
-            None
-        }
 
         _ => None,
     }
