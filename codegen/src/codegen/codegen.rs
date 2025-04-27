@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use parser::ast::*;
+use ::error::{WaveError, WaveErrorKind};
 
 pub struct Interpreter {
     pub variables: HashMap<String, Value>,
