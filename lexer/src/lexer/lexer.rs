@@ -49,8 +49,25 @@ impl<'a> Lexer<'a> {
     }
 
     fn advance(&mut self) -> char {
-        self.current += 1;
-        self.source.chars().nth(self.current - 1).unwrap_or('\0')
+        if self.is_at_end() {
+            return '\0';
+        }
+
+        let rest = &self.source[self.current..];
+        let (ch, size) = match std::str::from_utf8(rest.as_ref()) {
+            Ok(s) => {
+                let mut chars = s.chars();
+                if let Some(c) = chars.next() {
+                    (c, c.len_utf8())
+                } else {
+                    ('\0', 1)
+                }
+            }
+            Err(_) => ('\0', 1),
+        };
+
+        self.current += size;
+        ch
     }
 
     fn skip_whitespace(&mut self) {
