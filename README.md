@@ -2,7 +2,7 @@
   <img src="https://wave-lang.dev/img/favicon.ico" alt="Loa Programming Language Logo" width="100" />
   <h1>Loa Programming Language</h1>
   <p>
-    <a href="https://www.wave-lang.dev">Website</a> •
+    <a href="https://wave-lang.dev">Website</a> •
     <a href="https://github.com/LunaStev/Wave/wiki/Contributing">Contributing</a> •
     <a href="LICENSE">LICENSE</a>
   </p>
