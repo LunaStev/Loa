@@ -12,20 +12,15 @@ pub fn parse(tokens: &Vec<Token>) -> Option<Vec<ASTNode>> {
     let mut nodes = vec![];
 
     while let Some(token) = iter.peek() {
-        match token.token_type {
-            TokenType::Fun => {
-                if let Some(func) = parse_function(&mut iter) {
-                    nodes.push(func);
-                } else {
-                    println!("❌ Failed to parse function");
-                    return None;
-                }
-            }
-            TokenType::Eof => break,
-            _ => {
-                println!("❌ Unexpected token at top level: {:?}", token);
-                return None;
-            }
+        if token.token_type == TokenType::Eof {
+            break;
+        }
+
+        if let Some(node) = parse_statement(&mut iter) {
+            nodes.push(node);
+        } else {
+            println!("❌ Failed to parse statement");
+            return None;
         }
     }
 
