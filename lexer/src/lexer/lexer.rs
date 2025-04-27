@@ -711,17 +711,17 @@ impl<'a> Lexer<'a> {
     }
 
     // Helper methods to create tokens
-    fn create_int_token(&self, int_type: IntegerType, lexeme: String) -> Token {
+    fn create_int_token(&self, int_type: TokenType::TypeInt, lexeme: String) -> Token {
         Token {
-            token_type: TokenType::TokenTypeInt(int_type),
+            token_type: TokenType::TypeInt(int_type),
             lexeme,
             line: self.line,
         }
     }
 
-    fn create_float_token(&self, float_type: FloatType, lexeme: String) -> Token {
+    fn create_float_token(&self, float_type: TokenType::TypeFloat, lexeme: String) -> Token {
         Token {
-            token_type: TokenType::TokenTypeFloat(float_type),
+            token_type: TokenType::TypeFloat(float_type),
             lexeme,
             line: self.line,
         }
