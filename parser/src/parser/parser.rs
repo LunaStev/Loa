@@ -834,6 +834,21 @@ fn parse_while(tokens: &mut Peekable<Iter<Token>>) -> Option<ASTNode> {
     Some(ASTNode::Statement(StatementNode::While { condition, body }))
 }
 
+fn parse_return(tokens: &mut Peekable<Iter<Token>>) -> Option<ASTNode> {
+    let expr = if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
+        tokens.next(); // consume ';'
+        None
+    } else {
+        let value = parse_expression(tokens)?;
+        if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
+            tokens.next(); // consume ';'
+        }
+        Some(value)
+    };
+
+    Some(ASTNode::Statement(StatementNode::Return(expr)))
+}
+
 fn parse_assignment(tokens: &mut Peekable<Iter<Token>>, first_token: &Token) -> Option<ASTNode> {
     let left_expr = parse_expression_from_token(first_token, tokens)?;
 
