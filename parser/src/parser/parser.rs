@@ -942,25 +942,13 @@ pub fn parse_type(type_str: &str) -> Option<TokenType> {
         if parts.len() != 2 {
             return None;
         }
-        let inner_type = parse_type(parts[0].trim())?;
-        let size = parts[1].trim().parse::<u32>().ok()?;
-        Some(TokenType::TypeArray(Box::new(inner_type), size))
-    } else {
-        None
-    }
-}
-
-fn validate_type(expected: &TokenType, actual: &TokenType) -> bool {
-    match (expected, actual) {
-        (TokenType::TypeInt(_), TokenType::TypeInt(_)) => true,
-        (TokenType::TypeFloat(_), TokenType::TypeFloat(_)) => true,
-        (TokenType::TypeBool, TokenType::TypeBool) => true,
-        (TokenType::TypeChar, TokenType::TypeChar) => true,
-        (TokenType::TypeByte, TokenType::TypeByte) => true,
-        (TokenType::TypeArray(inner1, size1), TokenType::TypeArray(inner2, size2)) => {
-            validate_type(&**inner1, &**inner2) && size1 == size2 // Double dereference to get TokenType
+        TokenType::Identifier(_) => {
+            let first = tokens.next()?; // consume identifier
+            parse_assignment(tokens, first)
         }
-        (TokenType::TypeString, TokenType::TypeString) => true,
-        _ => false,
+        _ => {
+            println!("Error: Unknown token in block: {:?}", token);
+            None
+        }
     }
 }
