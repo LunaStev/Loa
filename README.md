@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="https://wave-lang.dev/img/favicon.ico" alt="Loa Programming Language Logo" width="100" />
   <h1>Loa Programming Language</h1>
   <p>
     <a href="https://wave-lang.dev">Website</a> •
