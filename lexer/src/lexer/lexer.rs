@@ -33,6 +33,8 @@ pub struct Lexer<'a> {
     pub source: &'a str,
     pub current: usize,
     pub line: usize,
+    pub indent_levels: Vec<usize>,
+    pub pending_indents: Vec<Token>,
 }
 
 impl<'a> Lexer<'a> {
@@ -41,6 +43,8 @@ impl<'a> Lexer<'a> {
             source,
             current: 0,
             line: 1,
+            indent_levels: vec![0],
+            pending_indents: Vec::new(),
         }
     }
 
@@ -80,6 +84,27 @@ impl<'a> Lexer<'a> {
                 '\n' => {
                     self.line += 1;
                     self.advance();
+
+                    let mut space_count = 0;
+                    while self.peek() == ' ' {
+                        self.advance();
+                        space_count += 1;
+                    }
+
+                    let current_indent = *self.indent_levels.last().unwrap_or(&0);
+                    if space_count > current_indent {
+                        self.indent_levels.push(space_count);
+                        self.pending_indents.push(Token::new(TokenType::Indent, "".to_string(), self.line));
+                    } else if space_count < current_indent {
+                        while let Some(&last) = self.indent_levels.last() {
+                            if last > space_count {
+                                self.indent_levels.pop();
+                                self.pending_indents.push(Token::new(TokenType::Dedent, "".to_string(), self.line));
+                            } else {
+                                break;
+                            }
+                        }
+                    }
                 }
                 _ => break,
             }
@@ -113,14 +138,25 @@ impl<'a> Lexer<'a> {
         let mut tokens = Vec::new();
 
         loop {
+            if let Some(token) = self.pending_indents.pop() {
+                tokens.push(token);
+                continue;
+            }
+
             let token = self.next_token();
 
             if token.token_type == TokenType::Eof {
+                while self.indent_levels.len() > 1 {
+                    self.indent_levels.pop();
+                    tokens.push(Token::new(TokenType::Dedent, "".to_string(), self.line));
+                }
                 tokens.push(token);
                 break;
             }
+
             tokens.push(token);
         }
+
         tokens
     }
 
@@ -178,7 +214,15 @@ impl<'a> Lexer<'a> {
      */
 
     pub fn next_token(&mut self) -> Token {
+        if let Some(token) = self.pending_indents.pop() {
+            return token;
+        }
+
         self.skip_whitespace();
+
+        if let Some(token) = self.pending_indents.pop() {
+            return token;
+        }
 
         if self.is_at_end() {
             return Token {
@@ -192,39 +236,17 @@ impl<'a> Lexer<'a> {
 
         match c {
             '+' => {
-                if self.match_next('+') {
-                    Token {
-                        token_type: TokenType::Increment,
-                        lexeme: "++".to_string(),
-                        line: self.line,
-                    }
-                } else {
-                    Token {
-                        token_type: TokenType::Plus,
-                        lexeme: "+".to_string(),
-                        line: self.line,
-                    }
+                Token {
+                    token_type: TokenType::Plus,
+                    lexeme: "+".to_string(),
+                    line: self.line,
                 }
             },
             '-' => {
-                if self.match_next('-') {
-                    Token {
-                        token_type: TokenType::Decrement,
-                        lexeme: "--".to_string(),
-                        line: self.line,
-                    }
-                } else if self.match_next('>') {
-                    Token {
-                        token_type: TokenType::Arrow,
-                        lexeme: "->".to_string(),
-                        line: self.line,
-                    }
-                } else {
-                    Token {
-                        token_type: TokenType::Minus,
-                        lexeme: "-".to_string(),
-                        line: self.line,
-                    }
+                Token {
+                    token_type: TokenType::Minus,
+                    lexeme: "-".to_string(),
+                    line: self.line,
                 }
             },
             '*' => {
@@ -316,20 +338,6 @@ impl<'a> Lexer<'a> {
                     line: self.line,
                 }
             },
-            '{' => {
-                Token {
-                    token_type: TokenType::Lbrace,
-                    lexeme: "{".to_string(),
-                    line: self.line,
-                }
-            },
-            '}' => {
-                Token {
-                    token_type: TokenType::Rbrace,
-                    lexeme: "}".to_string(),
-                    line: self.line,
-                }
-            },
             '[' => {
                 Token {
                     token_type: TokenType::Lbrack,
@@ -367,11 +375,7 @@ impl<'a> Lexer<'a> {
                         line: self.line,
                     }
                 } else {
-                    Token {
-                        token_type: TokenType::AddressOf,
-                        lexeme: "&".to_string(),
-                        line: self.line,
-                    }
+                    panic!("Error");
                 }
             },
             '|' => {
@@ -382,11 +386,7 @@ impl<'a> Lexer<'a> {
                         line: self.line,
                     }
                 } else {
-                    Token {
-                        token_type: TokenType::BitwiseOr,
-                        lexeme: "|".to_string(),
-                        line: self.line,
-                    }
+                    panic!("Error");
                 }
             },
             '!' => {
@@ -394,18 +394,6 @@ impl<'a> Lexer<'a> {
                     Token {
                         token_type: TokenType::NotEqual,
                         lexeme: "!=".to_string(),
-                        line: self.line,
-                    }
-                } else if self.match_next('&') {
-                    Token {
-                        token_type: TokenType::Nand,
-                        lexeme: "!&".to_string(),
-                        line: self.line,
-                    }
-                } else if self.match_next('|') {
-                    Token {
-                        token_type: TokenType::Nor,
-                        lexeme: "!|".to_string(),
                         line: self.line,
                     }
                 } else {
@@ -421,36 +409,6 @@ impl<'a> Lexer<'a> {
                     token_type: TokenType::Xor,
                     lexeme: "^".to_string(),
                     line: self.line,
-                }
-            },
-            '~' => {
-                if self.match_next('^') {
-                    Token {
-                        token_type: TokenType::Xnor,
-                        lexeme: "~^".to_string(),
-                        line: self.line,
-                    }
-                } else {
-                    Token {
-                        token_type: TokenType::BitwiseNot,
-                        lexeme: "~".to_string(),
-                        line: self.line,
-                    }
-                }
-            },
-            '?' => {
-                if self.match_next('?') {
-                    Token {
-                        token_type: TokenType::NullCoalesce,
-                        lexeme: "??".to_string(),
-                        line: self.line,
-                    }
-                } else {
-                     Token {
-                        token_type: TokenType::Condition,
-                        lexeme: "?".to_string(),
-                        line: self.line,
-                    }
                 }
             },
             ',' => {
@@ -475,41 +433,6 @@ impl<'a> Lexer<'a> {
                         Token {
                             token_type: TokenType::Fun,
                             lexeme: "fun".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "var" => {
-                        Token {
-                            token_type: TokenType::Var,
-                            lexeme: "var".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "deref" => {
-                        Token {
-                            token_type: TokenType::Deref,
-                            lexeme: "deref".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "let" => {
-                        Token {
-                            token_type: TokenType::Let,
-                            lexeme: "let".to_string(),
-                            line: self.line,
-                        }
-                    }
-                    "mut" => {
-                        Token {
-                            token_type: TokenType::Mut,
-                            lexeme: "mut".to_string(),
-                            line: self.line,
-                        }
-                    }
-                    "const" => {
-                        Token {
-                            token_type: TokenType::Const,
-                            lexeme: "const".to_string(),
                             line: self.line,
                         }
                     },
@@ -538,55 +461,6 @@ impl<'a> Lexer<'a> {
                         Token {
                             token_type: TokenType::For,
                             lexeme: "for".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "module" => {
-                        Token {
-                            token_type: TokenType::Module,
-                            lexeme: "module".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "class" => {
-                        Token {
-                            token_type: TokenType::Class,
-                            lexeme: "class".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "in" => {
-                        Token {
-                            token_type: TokenType::In,
-                            lexeme: "in".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "is" => {
-                        Token {
-                            token_type: TokenType::Is,
-                            lexeme: "is".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "rol" => {
-                        Token {
-                            token_type: TokenType::Rol,
-                            lexeme: "rol".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "ror" => {
-                        Token {
-                            token_type: TokenType::Ror,
-                            lexeme: "ror".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "xnand" => {
-                        Token {
-                            token_type: TokenType::Xnand,
-                            lexeme: "xnand".to_string(),
                             line: self.line,
                         }
                     },
@@ -629,48 +503,6 @@ impl<'a> Lexer<'a> {
                         Token {
                             token_type: TokenType::Println,
                             lexeme: "println".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "match" => {
-                        Token {
-                            token_type: TokenType::Match,
-                            lexeme: "match".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "char" => {
-                        Token {
-                            token_type: TokenType::TypeChar,
-                            lexeme: "char".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "byte" => {
-                        Token {
-                            token_type: TokenType::TypeByte,
-                            lexeme: "byte".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "ptr" => {
-                        Token {
-                            token_type: TokenType::Identifier("ptr".to_string()),
-                            lexeme: "ptr".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "array" => {
-                        Token {
-                            token_type: TokenType::TypeArray(Box::new(TokenType::Array), 0),
-                            lexeme: "array".to_string(),
-                            line: self.line,
-                        }
-                    },
-                    "str" => {
-                        Token {
-                            token_type: TokenType::TypeString,
-                            lexeme: "str".to_string(),
                             line: self.line,
                         }
                     },
@@ -786,8 +618,13 @@ impl<'a> Lexer<'a> {
             0
         };
 
-        while !self.is_at_end() && self.peek().is_alphanumeric() {
-            self.advance();
+        while !self.is_at_end() {
+            let c = self.peek();
+            if c.is_alphabetic() || c.is_numeric() || c == '_' {
+                self.advance();
+            } else {
+                break;
+            }
         }
 
         self.source[start..self.current].to_string()
