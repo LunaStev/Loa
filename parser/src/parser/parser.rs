@@ -743,22 +743,16 @@ fn parse_if(tokens: &mut Peekable<Iter<Token>>) -> Option<ASTNode> {
                 Some(other) => {
                     return None;
                 }
-                None => {
-                    return None;
-                }
             }
-
-            continue;
+        } else {
+            if tokens.peek()?.token_type != TokenType::Colon {
+                println!("Error: Expected ':' after 'else'");
+                return None;
+            }
+            tokens.next(); // Consume ':'
+            else_block = Some(Box::new(parse_block(tokens)?));
+            break;
         }
-
-        // Handle 'else' case
-        if tokens.peek()?.token_type != TokenType::Lbrace {
-            println!("Error: Expected '{{' after 'else'");
-            return None;
-        }
-        tokens.next(); // Consume '{'
-        else_block = Some(Box::new(parse_block(tokens)?));
-        break;
     }
 
     let result = ASTNode::Statement(StatementNode::If {
