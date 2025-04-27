@@ -1,0 +1,33 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LLVM 14
+        run: |
+          sudo apt-get update
+          sudo apt-get install llvm-14 llvm-14-dev clang-14 libclang-14-dev lld-14
+          sudo ln -s /usr/lib/llvm-14/lib/libLLVM-14.so /usr/lib/libllvm-14.so
+      - name: Set LLVM environment variables
+        run: |
+          export LLVM_SYS_140_PREFIX=/usr/lib/llvm-14
+      - name: Build
+        run: |
+          source ~/.bashrc
+          cargo clean
+          cargo build --verbose
+      - name: Run tests
+        run: cargo test --verbose

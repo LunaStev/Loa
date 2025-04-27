@@ -1,0 +1,18 @@
+[package]
+name = "loa"
+version = "0.0.1-pre-beta"
+edition = "2021"
+
+[dependencies]
+colorex = "0.1.0"
+lexer = { path = "./lexer" }
+parser = { path = "./parser" }
+
+[workspace]
+members = [
+    "lexer",
+    "parser",
+    "error",
+    ".",
+]
+
