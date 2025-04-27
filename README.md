@@ -22,88 +22,55 @@
 ---
 
 ## Overview
+Loa is a lightweight, simple, and Unicode-friendly scripting language.
+Designed for fast scripting, automation, and educational purposes.
 
-**Wave** is a next-generation programming language designed for developing operating systems, system software, and applications—entirely using **Wave**.  
-We're building a **Wave** compiler with full hardware access.
+* Minimalistic design
+
+* Python-like syntax (indentation-based blocks)
+
+* Full UTF-8 support
+
+* Small and fast interpreter written in Rust
 
 ---
 
 ## Examples
 
-### Fibonacci sequence
+### Simple print and variable usage
 
-```wave
-fun fibonacci(n: i32) -> i32 {
-    if (n == 0) {
-        return 0;
-    }
-    
-    if (n == 1) {
-        return 1;
-    }
-    
-    var prev :i32 = 0;
-    var curr :i32 = 1;
-    var next :i32;
-    var i :i32 = 2;
-    
-    while (i <= n) {
-        next = prev + curr;
-        prev = curr;
-        curr = next;
-        i = i + 1;
-    }
-    
-    return curr;
-}
+```loa
+print("Hello, world!")
 
-fun main() {
-    var i :i32 = 0;
-    var result :i32;
-    
-    while (i <= 10) {
-        result = fibonacci(i);
-        println("fibonacci({}) = {}", i, result);
-        i = i + 1;
-    }
-
-    println("END FIBONACCI");
-}
+x = 10
+y = 20
+print(x + y)
 ```
 
-## Pointer and Reverse Chalk
+### While loop example
 
-```wave
-fun main() {
-    var a: i32 = 10;
-    var b: i32 = 20;
-    
-    var p1: ptr<i32> = &a;
-    var p2: ptr<i32> = &b;
-    
-    println("Before:");
-    println("a = {}, b = {}", a, b);
-    println("p1 = {}, p2 = {}", deref p1, deref p2);
-    
-    var temp: i32 = deref p1;
-    deref p1 = deref p2;
-    deref p2 = temp;
-    
-    println("After:");
-    println("a = {}, b = {}", a, b);
-    println("p1 = {}, p2 = {}", deref p1, deref p2);
-}
+```loa
+x = 1
+while (x <= 5):
+    print(x)
+    x = x + 1
+```
+
+### If / Else If / Else example
+
+```loa
+x = 5
+y = 10
+
+if (x < y):
+    print("x is smaller than y")
+else if (x == y):
+    print("x and y are equal")
+else:
+    print("x is greater than y")
 ```
 
 More examples are available inside `test/`.
-
----
-
-## Concept
-
-<p align="center">
-  <img src=".github/scalability1.svg" alt="Wave Concept Diagram" width="60%">
-</p>
 
 ---
 
@@ -128,9 +95,8 @@ Interested in contributing? Check out our [Contributing Guide](https://github.co
 ---
 
 ## Sponsor Us
-
-Wave is an open-source project made possible by community support.  
-Consider sponsoring us to help maintain and improve the language.
+Loa is an open-source project made possible by community support.
+If you find Loa useful, please consider sponsoring us!
 
 <p align="center">
   <a href="https://ko-fi.com/X8X311B3SX">
@@ -142,7 +108,7 @@ Consider sponsoring us to help maintain and improve the language.
 
 ## Cool graphs
 
-[![Star History Chart](https://api.star-history.com/svg?repos=LunaStev/Wave&type=Date)](https://star-history.com/#LunaStev/Wave&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=LunaStev/Loa&type=Date)](https://star-history.com/#LunaStev/Loa&Date)
 
 ---
 
