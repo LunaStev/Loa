@@ -1,6 +1,9 @@
 use std::{env, fs, process, process::Command};
 use std::path::Path;
 use colorex::Colorize;
+use codegen::Interpreter;
+use lexer::Lexer;
+use parser::parse;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -71,10 +74,15 @@ unsafe fn run_loa_file(file_path: &str) {
     let mut lexer = Lexer::new(&code);
     let tokens = lexer.tokenize();
 
-    let ast = parse(&tokens).expect("Failed to parse Wave code");
+    let ast = parse(&tokens).expect("Failed to parse Loa code");
 
-    println!("{}\n", code);
-    println!("AST:\n{:#?}", ast);
+    // println!("code: \n{}\n", code);
+
+    // for token in tokens {
+    //     println!("{:?}", token);
+    // }
+
+    // println!("AST:\n{:#?}", ast);
 
     let mut interpreter = Interpreter::new();
     interpreter.execute(&ast);
