@@ -75,4 +75,7 @@ unsafe fn run_loa_file(file_path: &str) {
 
     println!("{}\n", code);
     println!("AST:\n{:#?}", ast);
+
+    let mut interpreter = Interpreter::new();
+    interpreter.execute(&ast);
 }
