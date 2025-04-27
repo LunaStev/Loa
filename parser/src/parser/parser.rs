@@ -885,16 +885,13 @@ fn parse_block(tokens: &mut Peekable<Iter<Token>>) -> Option<Vec<ASTNode>> {
                 tokens.next(); // consume Dedent
                 break;
             }
-            TokenType::Continue => {
-                if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
-                    tokens.next();
-                }
-                Some(ASTNode::Statement(StatementNode::Continue))
+            TokenType::Eof => {
+                println!("Error: Unexpected EOF inside block");
+                return None;
             }
-            TokenType::Return => {
-                let expr = if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
-                    tokens.next(); // consume ;
-                    None
+            _ => {
+                if let Some(node) = parse_statement(tokens) {
+                    body.push(node);
                 } else {
                     let value = parse_expression(tokens)?;
                     if let Some(Token { token_type: TokenType::SemiColon, .. }) = tokens.peek() {
