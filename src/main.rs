@@ -45,6 +45,7 @@ fn main() {
             let file_path = &args[2];
             run_loa_file(file_path);
         }
+        "repl" => repl_mode(),
         "help" => {
             println!("{}", "Options:".color("145,161,2"));
             println!("      {}       {}\n",
