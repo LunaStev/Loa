@@ -710,6 +710,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    /*
     // Helper methods to create tokens
     fn create_int_token(&self, int_type: TokenType::TypeInt, lexeme: String) -> Token {
         Token {
@@ -734,6 +735,7 @@ impl<'a> Lexer<'a> {
             line: self.line,
         }
     }
+     */
 
     // Add string literal processing function
     fn string(&mut self) -> String {
