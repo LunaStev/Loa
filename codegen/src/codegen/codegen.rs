@@ -70,6 +70,14 @@ impl Interpreter {
         }
     }
 
+    fn evaluate_condition(&mut self, expr: &Expression) -> bool {
+        match self.evaluate_expression(expr) {
+            Value::Bool(b) => b,
+            Value::Number(n) => n != 0,
+            _ => false,
+        }
+    }
+
     fn evaluate_expression(&mut self, expr: &Expression) -> Value {
         match expr {
             Expression::Literal(lit) => match lit {
