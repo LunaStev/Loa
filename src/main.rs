@@ -68,5 +68,11 @@ fn main() {
 unsafe fn run_loa_file(file_path: &str) {
     let code = fs::read_to_string(file_path).expect("Failed to read file");
 
-    // Run Code
+    let mut lexer = Lexer::new(&code);
+    let tokens = lexer.tokenize();
+
+    let ast = parse(&tokens).expect("Failed to parse Wave code");
+
+    println!("{}\n", code);
+    println!("AST:\n{:#?}", ast);
 }
