@@ -48,7 +48,7 @@ fn main() {
         "repl" => repl_mode(),
         "help" => {
             println!("{}", "Options:".color("145,161,2"));
-            println!("      {}\n      {}\n      {}\n",
+            println!("      {}      {}",
                      "run <file>".color("38,139,235"),
                      "Run the Loa code.");
             println!("      {}         {}",
