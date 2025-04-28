@@ -20,7 +20,7 @@ fn main() {
 
         eprintln!("  {}    {}",
                   "run <file>".color("38,139,235"),
-                  "Execute the specified Wave file");
+                  "Execute the specified Loa file");
 
         eprintln!("  {}     {}",
                   "--version".color("38,139,235"),
