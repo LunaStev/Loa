@@ -51,6 +51,9 @@ fn main() {
             println!("      {}\n      {}\n      {}\n",
                      "run <file>".color("38,139,235"),
                      "Run the Loa code.");
+            println!("      {}         {}",
+                     "repl".color("38,139,235"),
+                     "Start interactive mode.");
 
             println!("{}", "Commands:".color("145,161,2"));
             println!("      {}\n      {}\n",
