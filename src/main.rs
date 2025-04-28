@@ -56,7 +56,7 @@ fn main() {
                      "Start interactive mode.");
 
             println!("{}", "Commands:".color("145,161,2"));
-            println!("      {}\n      {}\n",
+            println!("      {}      {}\n",
                      "-V, --version".color("38,139,235"),
                      "Verified the version of the Loa interpreter.");
             return;
