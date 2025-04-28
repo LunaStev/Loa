@@ -13,7 +13,7 @@ fn main() {
     if args.len() < 2 {
         eprintln!("{} {}",
                   "Usage:".color("255,71,71"),
-                  "wave <command> [arguments]");
+                  "loa <command> [arguments]");
 
         eprintln!("{}",
                   "Commands:".color("145,161,2"));
